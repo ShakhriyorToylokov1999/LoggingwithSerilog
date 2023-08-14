@@ -3,6 +3,7 @@ using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Formatting.Json;
 using System;
+using System.Net;
 
 namespace BrainstormSessions
 {
@@ -11,10 +12,13 @@ namespace BrainstormSessions
         public static void Main(string[] args)
         {
             Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Debug()
-                .Enrich.FromLogContext()
-                .WriteTo.File(new JsonFormatter(),"log.txt")
-                .CreateLogger();
+                    .WriteTo.Email(
+                    fromEmail: "mySample@example.com",
+                    toEmail: "recieverSample@example.com",
+                    mailServer: "smtp.example.com",
+                    networkCredentials: new NetworkCredential("username", "password"),
+                    outputTemplate: "log.txt")
+                    .CreateLogger();
 
             try
             {
